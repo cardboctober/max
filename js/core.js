@@ -78,6 +78,52 @@ var core = function (window) {
     return tpl;
   };
 
+  // From: http://www.html5rocks.com/en/mobile/fullscreen/
+  function toggleFullScreen() {
+    var doc = window.document;
+    var docEl = doc.documentElement;
+
+    var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+    var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+    if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+      requestFullScreen.call(docEl);
+    }
+    else {
+      cancelFullScreen.call(doc);
+    }
+  }
+  var createFullScreenControl = function createFullScreenControl () {
+     // If we're inside an iframe, there is probably already a control on the parent
+     // so get out of dodge
+    if (window.top !== window.self) { return; }
+
+    if (core.isPocketDevice()) {
+      // Create a button
+      var button = document.createElement('button');
+      button.classList.add('fs-toggle');
+      button.innerText = 'Enter fullscreen';
+
+      // Append to body
+      document.body.appendChild(button);
+
+      // Bind it to enter fullscreen
+      button.addEventListener('click', function (e) {
+        toggleFullScreen();
+      }, false);
+
+      // Oh also create some styles
+      var css = '.fs-toggle { background: red; border: 0; padding: .5em 1em; font-size: 28px; box-sizing: border-box; position: absolute; z-index: 10001; margin: auto; left: 0; top: 0; bottom: 0; right: 0; width: 300px; height: 100px; }';
+      css += ':fullscreen .fs-toggle { display: none; }';
+      css += ':-webkit-full-screen .fs-toggle { display: none; }';
+      css += ':-moz-full-screen .fs-toggle { display: none; }';
+      var styleInject = document.createElement('style');
+      styleInject.innerText = css;
+      document.head.appendChild(styleInject);
+    }
+
+  };
+
   return {
     options: options,
     construct: construct,
@@ -86,6 +132,7 @@ var core = function (window) {
     setControllerMethod: setControllerMethod,
     resizeRenderer: resizeRenderer,
     setCameraOptions: setCameraOptions,
-    template: template
+    template: template,
+    createFullScreenControl: createFullScreenControl
   };
 }(window);
