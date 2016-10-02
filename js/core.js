@@ -133,6 +133,7 @@ var core = function (window) {
     resizeRenderer: resizeRenderer,
     setCameraOptions: setCameraOptions,
     template: template,
+    center: center,
     createFullScreenControl: createFullScreenControl
   };
 }(window);
