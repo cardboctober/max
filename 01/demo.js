@@ -42,7 +42,7 @@
   ground = core.build(
     'PlaneBufferGeometry', [2000, 2000, 100],
     'MeshLambertMaterial', [{
-      color: 0x222222,
+      color: 0xffffff,
       map: groundTexture
     }]
   );
