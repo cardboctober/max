@@ -297,8 +297,8 @@
 
     var newGame = function () {
 
-        var cardSize = 22;
-        var spacing = cardSize * 1.5;
+        var cardSize = 24;
+        var spacing = cardSize * 1.1;
         var cX = -1;
         var cY = 0;
         var numTries = 0;
