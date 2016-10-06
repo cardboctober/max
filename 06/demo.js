@@ -281,6 +281,7 @@
         var numTries = 0;
         var flippedBens = [];
         var solvedBens = [];
+        var allBens = [];
 
         var randomBens = pickCardSet(bens, benCount / 2); // only pick half as many as we need
         // then duplicate them!
@@ -340,6 +341,10 @@
                     if (flippedBens.length === 2) {
                         numTries++;
                         if (flippedBens[0].card.id === flippedBens[1].card.id) {
+                            var sound = new Howl({
+                                src: "correct.mp3"
+                            });
+                            sound.play();
                             setTimeout(function () {
                                 flippedBens.forEach(function (ben) {
                                     scene.remove(ben);
@@ -352,11 +357,16 @@
                                 });
                                 flippedBens = [];
                             }, 500);
+                        } else {
+                            var sound = new Howl({
+                                src: "wrong.mp3"
+                            });
+                            sound.play();
                         }
                     }
                 } else {
                     if (flippedBens.length >= 2) {
-                        flippedBens.forEach(function (ben) {
+                        allBens.forEach(function (ben) {
                             ben.rotation.y = Math.PI;
                             ben.card.flipped = false;
                         });
@@ -368,6 +378,7 @@
             angle += step;
 
             reticle.add_collider(benMesh);
+            allBens.push(benMesh);
             scene.add(benMesh);
         });
 
@@ -403,10 +414,10 @@
             intro.scale.y = scale.y;
             intro.scale.z = scale.z;
         });
+        reticle.remove_collider(intro);
         intro_tween.start();
         setTimeout(function () {
             scene.remove(intro);
-            reticle.remove_collider(intro);
         }, 1000);
     };
     reticle.add_collider(intro);
