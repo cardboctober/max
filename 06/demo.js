@@ -58,6 +58,29 @@
     ambientLight = new T.AmbientLight(0xffffff, .8);
     scene.add(ambientLight);
 
+
+  light = new T.DirectionalLight(0xffffff, .5);
+  light.color.setHSL(0.1, 1, 0.95);
+  light.position.set(0, 30, 20);
+  light.position.multiplyScalar(40);
+  light.castShadow = true;
+
+  // Increase size for sharper shadows
+  light.shadow.MapWidth = 1024;
+  light.shadow.MapHeight = 1024;
+
+  var d = 256;
+
+  light.shadow.camera.left = -d;
+  light.shadow.camera.right = d;
+  light.shadow.camera.top = d;
+  light.shadow.camera.bottom = -d;
+
+  light.shadow.camera.far = 3500;
+  light.shadow.bias = -0.0001;
+
+  scene.add(light);
+
     // Game stuff
 
     var bens = [
