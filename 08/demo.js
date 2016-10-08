@@ -237,20 +237,20 @@
 
 
         // Draw lines from speakers to buttons
-        var material = new THREE.LineBasicMaterial({
+        var material = new T.LineBasicMaterial({
             color: 0xaaaaaa,
             linewidth: 10
         });
 
-        var geometry = new THREE.Geometry();
+        var geometry = new T.Geometry();
         geometry.vertices.push(
-            new THREE.Vector3( spos.x, spos.y, spos.z ),
-            new THREE.Vector3( spos.x, -10, spos.z ),
-            new THREE.Vector3( bpos.x, -20, bpos.z ),
-            new THREE.Vector3( bpos.x, bpos.y, bpos.z )
+            new T.Vector3( spos.x, spos.y, spos.z ),
+            new T.Vector3( spos.x, -10, spos.z ),
+            new T.Vector3( bpos.x, -20, bpos.z ),
+            new T.Vector3( bpos.x, bpos.y, bpos.z )
         );
 
-        var line = new THREE.Line( geometry, material );
+        var line = new T.Line( geometry, material );
         scene.add( line );
 
 
@@ -259,7 +259,6 @@
         var looked = false;
         var triggerButton = function () {
             if (!looked) {
-                console.log(played);
                 if (!played.includes(i)) {
                     played.push(i);
                 } else {
@@ -290,7 +289,6 @@
                     src: 'jump.mp3'
                 });
                 sound.pos(spos.x, spos.y, spos.z);
-                console.log(sound);
                 sound.play();
 
                 looked = true;
