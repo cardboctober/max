@@ -254,7 +254,16 @@
         scene.add( line );
 
 
-
+        var updateColors = function (color1, color2, color3, color4) {
+            s.speaker.children[1].material.materials.forEach(function (mat){
+                mat.color.setHex(color1);
+            });
+            s.speaker.children[2].material.materials.forEach(function (mat){
+                mat.color.setHex(color2);
+            });
+            s.button.children[1].material.color.setHex(color3);
+            line.material.color.setHex(color4);
+        }
 
         var looked = false;
         var triggerButton = function () {
@@ -262,26 +271,47 @@
                 if (!played.includes(i)) {
                     played.push(i);
                 } else {
-                    if (played.length === speakers.length) {
+                    if (played.length === 1) {
+                    // if (played.length === speakers.length) {
                         // play the secret sound!
                         var sound = new Howl({
                             src: 'birabuto.mp3',
+                            volume: .6,
                             onend: function () {
                                 played = [];
+                                updateColors(0x222222, 0x222222, 0xdd0000, 0xaaaaaa);
                             }
                         });
-                        sound.play();
+                        var soundid = sound.play();
+                        var colors = [
+                            0xfa5252,
+                            0xe64980,
+                            0xbe4bdb,
+                            0x7950f2,
+                            0x4c6ef5,
+                            0x228ae6,
+                            0x15aabf,
+                            0x12b886,
+                            0x40c057,
+                            0x82c91e,
+                            0xfab005,
+                            0xfd7e14
+                        ];
+                        var changeToColor = function (color) {
+                            updateColors(color, color, color, color);
+                        };
+                        var length = 9900;
+
+                        var clength = colors.length;
+                        for (var i=0;i<clength;i++) {
+                            var color = colors[i];
+                            var timeout = i * (length / clength);
+                            setTimeout(changeToColor.bind(null, color), timeout);
+                        }
                         played = [];
                     }
                 }
-                s.speaker.children[1].material.materials.forEach(function (mat){
-                    mat.color.setHex(0xffffff);
-                });
-                s.speaker.children[2].material.materials.forEach(function (mat){
-                    mat.color.setHex(0xffffff);
-                });
-                s.button.children[1].material.color.setHex(0xffffff);
-                line.material.color.setHex(0xffffff);
+                updateColors(0xffffff, 0xffffff, 0xffffff, 0xffffff);
 
                 s.button.children[1].position.y -= .5;
 
@@ -295,15 +325,8 @@
 
                 setTimeout(function () {
                     looked = false;
-                    s.speaker.children[1].material.materials.forEach(function (mat){
-                        mat.color.setHex(0x222222);
-                    });
-                    s.speaker.children[2].material.materials.forEach(function (mat){
-                        mat.color.setHex(0x222222);
-                    });
-                    s.button.children[1].material.color.setHex(0xdd0000);
+                    updateColors(0x222222, 0x222222, 0xdd0000, 0xaaaaaa);
                     s.button.children[1].position.y += .5;
-                    line.material.color.setHex(0xaaaaaa);
                 }, 1000);
             }
         };
