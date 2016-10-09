@@ -59,7 +59,7 @@ var core = function (window) {
   };
 
   var options = {
-    fov: isPocketDevice() ? 90 : 40,
+    fov: isPocketDevice() ? 90 : 70,
     width: window.innerWidth,
     height: window.innerHeight,
     aspect: 1,
