@@ -109,7 +109,7 @@
     reticle.reticle_loop();
 
     controls.update();
-    renderer.render(scene, camera);
+    _renderer.render(scene, camera);
     requestAnimationFrame(animateRenderer);
   };
   var animateRenderer = function() {
