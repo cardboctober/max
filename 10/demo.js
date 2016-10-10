@@ -3,6 +3,8 @@
   var core = window.core;
   var T = window.THREE;
 
+  var playOnTouch;
+
   core.init();
   core.addGround();
 
@@ -125,10 +127,6 @@
     row.forEach(function(col, j) {
       if (col == 1) {
         var chair = chairObject.clone();
-        chair.seat = {
-          row: i,
-          col: j
-        };
         chair.position.x = (j * metrics.width) - xOffset;
         chair.position.y = height * (0.3 * metrics.height);
         chair.position.z = i * metrics.depth;
@@ -147,6 +145,15 @@
     video.poster = 'video.png';
   var videoSource = document.createElement('source');
       videoSource.src = 'video.webm';
+      videoSource.type = 'video/webm';
+      video.appendChild(videoSource);
+  var videoSource = document.createElement('source');
+      videoSource.src = 'video.ogv';
+      videoSource.type = 'video/ogg';
+      video.appendChild(videoSource);
+  var videoSource = document.createElement('source');
+      videoSource.src = 'video.mp4';
+      videoSource.type = 'video/mp4';
       video.appendChild(videoSource);
 
   //make your video canvas
@@ -184,16 +191,35 @@
   screen.ongazelong = function () {
     if (!playing) {
       playing = true;
-      videotexture = new THREE.Texture(videocanvas);
-      videotexture.wrapS = videotexture.wrapT = T.RepeatWrapping;
-      videotexture.repeat.x = 1;
-      videotexture.repeat.y = 1;
-      videotexture.offset.x = -.15;
-      videotexture.offset.y = .1;
-      screen.material.map = videotexture;
-      video.load();
-      video.play();
-      reticle.remove_collider(screen);
+      if (core.isPocketDevice()) {
+        videotexture = textureLoader.load('mobile-instructions.png');
+        screen.material.map = videotexture;
+        playOnTouch = function () {
+          videotexture = new THREE.Texture(videocanvas);
+          videotexture.wrapS = videotexture.wrapT = T.RepeatWrapping;
+          videotexture.repeat.x = 1;
+          videotexture.repeat.y = 1;
+          videotexture.offset.x = -.15;
+          videotexture.offset.y = .1;
+          screen.material.map = videotexture;
+          video.load();
+          video.play();
+          document.removeEventListener('click', playOnTouch, false);
+          reticle.remove_collider(screen);
+        }
+        document.addEventListener('click', playOnTouch, false);
+      } else {
+        videotexture = new THREE.Texture(videocanvas);
+        videotexture.wrapS = videotexture.wrapT = T.RepeatWrapping;
+        videotexture.repeat.x = 1;
+        videotexture.repeat.y = 1;
+        videotexture.offset.x = -.15;
+        videotexture.offset.y = .1;
+        screen.material.map = videotexture;
+        video.load();
+        video.play();
+        reticle.remove_collider(screen);
+      }
     }
   };
   reticle.add_collider(screen);
