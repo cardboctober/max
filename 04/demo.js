@@ -33,6 +33,8 @@
     effect.focalLength = 25;
     effect.setSize(core.options.width, core.options.height);
 
+  renderer = core.isPocketDevice()? effect : renderer;
+
     var textureLoader = new T.TextureLoader();
     var groundTexture = textureLoader.load('grid.png');
     var bumpTexture = textureLoader.load('bump.png');
@@ -235,7 +237,7 @@
 
     var animateRenderer = function() {
         controls.update();
-        effect.render(scene, camera);
+        renderer.render(scene, camera);
         requestAnimationFrame(animateRenderer);
         tetrominos.forEach(function(tetromino) {
           tetromino.rotation.y += 0.025;

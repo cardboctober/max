@@ -33,6 +33,8 @@
   effect.focalLength = 25;
   effect.setSize(core.options.width, core.options.height);
 
+  renderer = core.isPocketDevice()? effect : renderer;
+
 
   ambientLight = new T.AmbientLight(0xffffff, 0.8);
   scene.add(ambientLight);
@@ -169,7 +171,7 @@
   var animateRenderer = function() {
     controls.update();
     reticle.reticle_loop();
-    effect.render(scene, camera);
+    renderer.render(scene, camera);
     requestAnimationFrame(animateRenderer);
   };
   animateRenderer();

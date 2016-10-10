@@ -36,6 +36,8 @@
     effect.focalLength = 25;
     effect.setSize(core.options.width, core.options.height);
 
+  renderer = core.isPocketDevice()? effect : renderer;
+
     var textureLoader = new T.TextureLoader();
     var groundTexture = textureLoader.load('grid.png');
 
@@ -344,7 +346,7 @@
     var animateRenderer = function() {
         controls.update();
         reticle.reticle_loop();
-        effect.render(scene, camera);
+        renderer.render(scene, camera);
         requestAnimationFrame(animateRenderer);
     };
     animateRenderer();
