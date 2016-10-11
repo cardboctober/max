@@ -102,12 +102,14 @@
     [1, 1, 1, 1, 0, 1, 1, 1, 1],
     [1, 1, 1, 1, 0, 1, 1, 1, 1],
   ];
-
+  var randomIndex = function(array) {
+    return Math.floor(Math.random() * array.length);
+  };
   var randomSeat = function () {
-    var indexR = Math.floor(Math.random() * chairArrangement.length);
-    var indexC = Math.floor(Math.random() * chairArrangement[indexR].length);
+    var indexR = randomIndex(chairArrangement);
+    var indexC = randomIndex(chairArrangement[indexR]);
     while (chairArrangement[indexR][indexC] == 0) {
-      indexC = Math.floor(Math.random() * chairArrangement[indexR].length);
+      indexC = randomIndex(chairArrangement[indexR]);
     }
     return {
       row: indexR,
@@ -171,7 +173,6 @@
   videocanvasctx.fillStyle = "#222222";
   videocanvasctx.fillRect(0,0,vidw,vidh);
   var videotexture = textureLoader.load('video.png');
-  // var videomaterial = new THREE.MeshLambertMaterial( { map: videotexture, overdraw: 0.5 } );
 
 
   var screen = core.build(
