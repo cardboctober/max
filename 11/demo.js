@@ -22,24 +22,24 @@
   scene.add(light);
 
   var sounds = [
-    'sounds/bd01.wav',
-    'sounds/cp01.wav',
-    'sounds/cr01.wav',
-    'sounds/hh01.wav',
-    'sounds/ht01.wav',
-    'sounds/lt01.wav',
-    'sounds/mt01.wav',
-    'sounds/oh01.wav',
-    'sounds/rd01.wav',
-    'sounds/rs01.wav',
-    'sounds/sd01.wav',
+    {sound:'sounds/bd01.wav', tex: 'textures/bass-drum.png'},
+    {sound:'sounds/ht01.wav', tex: 'textures/hi-tom.png'},
+    {sound:'sounds/mt01.wav', tex: 'textures/med-tom.png'},
+    {sound:'sounds/lt01.wav', tex: 'textures/low-tom.png'},
+    {sound:'sounds/hh01.wav', tex: 'textures/hi-hat.png'},
+    {sound:'sounds/oh01.wav', tex: 'textures/open-hat.png'},
+    {sound:'sounds/sd01.wav', tex: 'textures/snare.png'},
+    {sound:'sounds/rs01.wav', tex: 'textures/rim-shot.png'},
+    {sound:'sounds/cp01.wav', tex: 'textures/clap.png'},
+    {sound:'sounds/cr01.wav', tex: 'textures/crash.png'},
+    {sound:'sounds/rd01.wav', tex: 'textures/ride.png'},
   ];
 
   var pauseButton = core.build(
     'BoxGeometry', [40, 20, 0],
     'MeshLambertMaterial', [{
       color: 0x555555,
-      map: textureLoader.load('pause.png')
+      map: textureLoader.load('textures/pause.png')
     }]
   );
   pauseButton.position.x = -(60 * Math.cos((Math.PI / 2.2)));
@@ -52,7 +52,7 @@
     'BoxGeometry', [40, 20, 0],
     'MeshLambertMaterial', [{
       color: 0x555555,
-      map: textureLoader.load('reset.png')
+      map: textureLoader.load('textures/reset.png')
     }]
   );
   resetButton.position.x = -(60 * Math.cos((Math.PI / 1.3)));
@@ -86,7 +86,7 @@
         'BoxGeometry', [scale - (scale / 4), scale - (scale / 4), 1],
         'MeshLambertMaterial', [{
           color: 0xfa5252,
-          map: textureLoader.load('bump.png')
+          map: textureLoader.load(sound.tex)
         }]
       );
 
@@ -98,6 +98,7 @@
       obj.position.y = ((scale / 3) * sounds.length) - (scale * i); // stack in from top to bottom
       obj.playing = false;
       obj.name = 'cell';
+      obj.sound = sound.sound;
       obj.lookAt(cameraPosition);
       cells.push(obj);
     };
@@ -168,7 +169,7 @@
 
         if (currentBeat.active) {
           var sound = new Howl({
-            src: sounds[i]
+            src: currentBeat.sound
           });
           sound.play();
         }
