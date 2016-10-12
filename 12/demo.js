@@ -5,7 +5,6 @@
   core.init();
   core.addGround();
   ground.name = 'ground';
-  camera.position.y = 10;
   var ambientLight = new T.AmbientLight(0xffffff, .8);
   scene.add(ambientLight);
   var light = new T.PointLight(0xff0000, 0);
@@ -68,7 +67,6 @@
       scene.add(enemy);
     }
   }
-  setupZombies();
   var maxplaying = 16;
   var playing = 0;
   var updateEnemies = function() {
@@ -118,20 +116,22 @@
     target = false;
     e.preventDefault();
   };
-  document.addEventListener('mousedown', start);
-  document.addEventListener('mouseup', stop);
-  document.addEventListener('touchstart', start);
-  document.addEventListener('touchend', stop);
-  var glowMaterial = new T.MeshLambertMaterial();
-  glowMaterial.transparent = true;
-  glowMaterial.map = textureLoader.load('glow.png');
-  glowMaterial.side = T.DoubleSide;
-  var glowLight = new T.PointLight(0xddddff, 1, 10);
-  glowLight.position.z = -0.2;
-  var plane = new T.PlaneGeometry(10, 10);
-  var glow = new T.Mesh(plane, glowMaterial);
-  glow.add(glowLight);
-  scene.add(glow);
+  var glowMaterial
+  var glowLight
+  var plane
+  var glow
+  var setupRing = function() {
+    glowMaterial = new T.MeshLambertMaterial();
+    glowMaterial.transparent = true;
+    glowMaterial.map = textureLoader.load('glow.png');
+    glowMaterial.side = T.DoubleSide;
+    glowLight = new T.PointLight(0xddddff, 1, 10);
+    glowLight.position.z = -0.2;
+    plane = new T.PlaneGeometry(10, 10);
+    glow = new T.Mesh(plane, glowMaterial);
+    glow.add(glowLight);
+    scene.add(glow);
+  }
   var materials = [
     createSkyMaterial('px.jpg'),
     createSkyMaterial('nx.jpg'),
@@ -157,57 +157,86 @@
   mesh.scale.set(-1, 1, 1);
   mesh.name = 'sky';
   scene.add(mesh);
+  // setup control to init
+  var startControl = core.build(
+    'BoxGeometry', [20, 10, 1],
+    'MeshLambertMaterial', [{
+      color: 0xffffff,
+      map:textureLoader.load('start.png')
+    }]
+  );
+  startControl.name = 'start';
+  startControl.position.z = -20;
+  startControl.position.y = 10;
+  startControl.ongazelong = function () {
+    init();
+  };
+  reticle.add_collider(startControl);
+  scene.add(startControl);
+  var init = function() {
+    setupRing();
+    setupZombies();
+    document.addEventListener('mousedown', start);
+    document.addEventListener('mouseup', stop);
+    document.addEventListener('touchstart', start);
+    document.addEventListener('touchend', stop);
+    scene.remove(startControl);
+    reticle.remove_collider(startControl);
+  };
   ////////////////////////
   var update = function() {
     controls.update();
     _renderer.render(scene, camera);
+    reticle.reticle_loop();
     requestAnimationFrame(animateRenderer);
-    if (enemies.length < 1) {
-      setupZombies();
-    } else {
-      // shamelessly stolen from Pete
-      updateEnemies();
-      if (blink) {
-        camera.position.lerpVectors(blink[0], blink[1], blink[2]);
-        blink[2] += 0.05;
-        if (blink[2] > 1) {
-          camera.position.copy(blink[1]);
-          blink = false;
-        }
-      } else if (casting) {
-        raycaster.set(camera.position, across.clone().applyQuaternion(camera.quaternion));
-        var targets = enemies.concat(ground);
-        var rays = raycaster.intersectObjects(targets);
-        if (rays.length) {
-          var targetobject = rays[0].object;
-          switch (targetobject.name) {
-            case 'ground':
-              // movement!
-              target = true;
-              glow.position.copy(rays[0].point);
-              glow.position.y += 0.08;
-              var rotation = new T.Quaternion().setFromUnitVectors(up, rays[0].face.normal);
-              glow.rotation.set(0, 0, 0);
-              glow.quaternion.multiply(rotation);
-              break;
-            case 'zombie':
-              var chance = Math.random() * 7;
-              if (chance > 5) {
-                // random chance of killing the zombie
-                scene.remove(targetobject);
-                enemies.splice(enemies.indexOf(targetobject), 1);
-              }
-              break;
-            case 'sky':
-              // do something when you hit the sky
-              break;
+    if (enemies) {
+      if (enemies.length < 1) {
+        setupZombies();
+      } else {
+        // shamelessly stolen from Pete
+        updateEnemies();
+        if (blink) {
+          camera.position.lerpVectors(blink[0], blink[1], blink[2]);
+          blink[2] += 0.05;
+          if (blink[2] > 1) {
+            camera.position.copy(blink[1]);
+            blink = false;
+          }
+        } else if (casting) {
+          raycaster.set(camera.position, across.clone().applyQuaternion(camera.quaternion));
+          var targets = enemies.concat(ground);
+          var rays = raycaster.intersectObjects(targets);
+          if (rays.length) {
+            var targetobject = rays[0].object;
+            switch (targetobject.name) {
+              case 'ground':
+                // movement!
+                target = true;
+                glow.position.copy(rays[0].point);
+                glow.position.y += 0.08;
+                var rotation = new T.Quaternion().setFromUnitVectors(up, rays[0].face.normal);
+                glow.rotation.set(0, 0, 0);
+                glow.quaternion.multiply(rotation);
+                break;
+              case 'zombie':
+                var chance = Math.random() * 7;
+                if (chance > 5) {
+                  // random chance of killing the zombie
+                  scene.remove(targetobject);
+                  enemies.splice(enemies.indexOf(targetobject), 1);
+                }
+                break;
+              case 'sky':
+                // do something when you hit the sky
+                break;
+            }
+          } else {
+            target = false;
+            glow.position.set(0, -9, 0);
           }
         } else {
-          target = false;
           glow.position.set(0, -9, 0);
         }
-      } else {
-        glow.position.set(0, -9, 0);
       }
     }
   };
