@@ -118,7 +118,7 @@ var core = function(window) {
   var addGround = function(height) {
     var groundTexture = textureLoader.load('../js/grid.png');
     groundTexture.wrapS = groundTexture.wrapT = T.RepeatWrapping;
-    groundTexture.repeat.set(128, 128);
+    groundTexture.repeat.set(512, 512);
     window.ground = core.build(
       'PlaneBufferGeometry', [1000, 1000, 100],
       'MeshLambertMaterial', [{

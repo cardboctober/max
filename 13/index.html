@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>12: AAAAH! More Zombies</title>
+  <style>
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  body {
+    background: #111;
+  }
+  </style>
+</head>
+
+<body>
+  <script src="../js/libs/fullscreen-api-polyfill.min.js"></script>
+  <script src="../js/libs/three.min.js"></script>
+  <script src="../js/libs/StereoEffect.js"></script>
+  <script src="../js/libs/DeviceOrientationControls.js"></script>
+  <script src="../js/libs/OrbitControls.js"></script>
+  <script src="../js/core.js"></script>
+  <script src="demo.js"></script>
+  <style>
+  .overlay {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(hurt.png);
+    background-size: 50% 100%;
+  }
+
+  .message {
+    color: #fff;
+    font-family: helvetica, sans-serif;
+    font-size: 5vw;
+    line-height: 100vh;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .dead {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1001;
+    pointer-events: none;
+    display: none;
+    width: 50vw;
+  }
+
+  .dead + .dead {
+    right: 0;
+    left: auto;
+  }
+  </style>
+  <div class="overlay"></div>
+  <div class="message dead">You are dead!</div>
+  <div class="message dead">You are dead!</div>
+</body>
+
+</html>
