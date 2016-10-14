@@ -182,7 +182,7 @@
   };
   ///////////////////////////////
   var startButton;
-  var pickWithMouse = function() {
+  var pickWithMouse = function(event) {
     var raycaster = new THREE.Raycaster();
     var mouse = new THREE.Vector2();
     mouse.x = (event.clientX / renderer.domElement.width) * 2 - 1;
