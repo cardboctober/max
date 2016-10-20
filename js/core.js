@@ -32,7 +32,7 @@ var core = function(window) {
   };
 
   var setControllerMethod = function(camera, domElement) {
-    var controls = void 0;
+    var controls;
     if (core.isPocketDevice()) {
       controls = new T.DeviceOrientationControls(camera, true);
     } else {
@@ -41,6 +41,7 @@ var core = function(window) {
       controls.dampingFactor = 0.25;
       controls.enableZoom = false;
       controls.enablePan = false;
+      controls.target.set(camera.position.x, camera.position.y, camera.position.z);
     }
     return controls;
   };
@@ -59,7 +60,7 @@ var core = function(window) {
   };
 
   var setCameraOptions = function() {
-    var camera = void 0;
+    var camera;
     camera = new T.PerspectiveCamera(
       core.options.fov,
       core.options.aspect,
@@ -80,6 +81,53 @@ var core = function(window) {
     return tpl;
   };
 
+  var createOrientationCalibrationControl = function (controls) {
+    if (!core.isPocketDevice()) return;
+
+    var button = document.createElement('button');
+    button.classList.add('calibrate-orientation');
+    // button.innerText = 'Calibrate Orientation';
+    document.body.appendChild(button);
+
+    var span1 = document.createElement('span');
+    span1.classList.add('offset');
+    button.appendChild(span1);
+
+    var span2 = document.createElement('span');
+    span2.classList.add('actual');
+    button.appendChild(span2);
+
+    button.addEventListener('click', function (e) {
+      var alpha = controls.deviceOrientation.alpha;
+      var offset = T.Math.degToRad(-alpha);
+      controls.updateAlphaOffsetAngle(offset);
+    });
+
+    window.updateCompassControl = function () {
+      var alpha = controls.deviceOrientation.alpha;
+      var alpha_offset = controls.alphaOffsetAngle || 0;
+      var alpha_actual = T.Math.degToRad(-alpha);
+      if (alpha !== undefined) {
+        var el = document.querySelectorAll('.calibrate-orientation .offset')[0];
+        el.setAttribute('style', 'transform: rotate('+alpha_offset+'rad);');
+
+        var el = document.querySelectorAll('.calibrate-orientation .actual')[0];
+        el.setAttribute('style', 'transform: rotate('+alpha_actual+'rad);');
+      }
+      requestAnimationFrame(window.updateCompassControl);
+      console.log(controls.deviceOrientation.absolute);
+
+    };
+    window.updateCompassControl();
+
+    var css = '.calibrate-orientation {outline: none; background: #fff; border-radius: 100%; border:0; padding:0;box-shadow: 0 0 80px 20px #000; box-sizing: border-box; position: absolute; left: 0; right: 0; bottom: 0; width: 50px; height: 50px; margin: auto auto 20px;}';
+    css+= '.calibrate-orientation span {display: block; width: 100%; height: 100%; position: absolute; left: 0; top: 0;}';
+    css+= '.calibrate-orientation .offset { background-image: url(../js/compass_current.png); background-size: contain;}';
+    css+= '.calibrate-orientation .actual { background-image: url(../js/compass_actual.png); background-size: contain;}';
+    var styleInject = document.createElement('style');
+    styleInject.innerText = css;
+    document.head.appendChild(styleInject);
+  };
   var createFullScreenControl = function() {
     // If we're inside an iframe, there is probably already a control on the parent
     // so get out of dodge
@@ -87,22 +135,17 @@ var core = function(window) {
       return; }
     if (!document.fullscreenEnabled) {
       return; }
-
-
     if (core.isPocketDevice()) {
       // Create a button
       var button = document.createElement('button');
       button.classList.add('fs-toggle');
       button.innerText = 'Enter fullscreen';
-
       // Append to body
       document.body.appendChild(button);
-
       // Bind it to enter fullscreen
       button.addEventListener('click', function(e) {
         document.body.requestFullscreen();
       }, false);
-
       // Oh also create some styles
       var css = '.fs-toggle { background: #000; border: 2px solid #0f0; padding: .5em 1em; font-size: 28px; color: #0f0; box-shadow: 0 0 80px 20px #000; box-sizing: border-box; position: absolute; z-index: 10001; margin: auto; left: 0; top: 0; bottom: 0; right: 0; width: 300px; height: 100px; }';
       css += ':fullscreen .fs-toggle { display: none; }';
@@ -112,7 +155,6 @@ var core = function(window) {
       styleInject.innerText = css;
       document.head.appendChild(styleInject);
     }
-
   };
 
   var addGround = function(height) {
@@ -155,6 +197,7 @@ var core = function(window) {
     renderer.shadowMap.soft = true;
     document.body.appendChild(renderer.domElement);
     window.controls = setControllerMethod(camera, renderer.domElement);
+    createOrientationCalibrationControl(window.controls);
 
     camera.position.set(0, 40, 0);
     window._renderer = renderer;
