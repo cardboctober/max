@@ -115,8 +115,6 @@ var core = function(window) {
         el.setAttribute('style', 'transform: rotate('+alpha_actual+'rad);');
       }
       requestAnimationFrame(window.updateCompassControl);
-      console.log(controls.deviceOrientation.absolute);
-
     };
     window.updateCompassControl();
 
