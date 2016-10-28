@@ -51,7 +51,7 @@
     col.forEach(function (row) {
       var _block = new T.Mesh(block.geometry.clone(), block.material.clone());
       _block.position.set(row.x, row.y, row.z);
-      _block.lookAt(new T.Vector3(camera.position.x, row.y, camera.position.z));
+      _block.lookAt(new T.Vector3(core.center.x, row.y, core.center.x));
       scene.add(_block);
     });
   });
@@ -83,7 +83,7 @@
     var pos = positions[middleCol][0];
 
     piece.position.set(pos.x, pos.y, pos.z);
-    piece.lookAt(new T.Vector3(camera.position.x, pos.y, camera.position.z));
+    piece.lookAt(new T.Vector3(core.center.x, pos.y, core.center.x));
     piece.material.opacity = 1;
     // eventually generate shapes here
     return piece;

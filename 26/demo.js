@@ -334,7 +334,7 @@
         // var z = -40;
         board[r][c].position.set(positions[c].x, y, positions[c].z);
         board[r][c].material.opacity = board[r][c].active ? 1 : .2; // .2 for debug
-        board[r][c].lookAt(new T.Vector3(0, y, 0));
+        board[r][c].lookAt(new T.Vector3(core.center.x, y, core.center.z));
         board[r][c].castShadow = board[r][c].active;
         board[r][c].recieveShadow = board[r][c].active;
 

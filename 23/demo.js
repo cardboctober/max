@@ -29,7 +29,7 @@
     _block.position.z = (circle.depth / numBlocks) + (circle.radius * Math.sin(angle));
 
     // Look at the camera for uniform rotation
-    _block.lookAt(new T.Vector3(camera.position.x, 0, camera.position.z));
+    _block.lookAt(new T.Vector3(core.center.x, 0, core.center.x));
 
     scene.add(_block);
 
